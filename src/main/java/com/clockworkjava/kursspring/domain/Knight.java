@@ -2,24 +2,31 @@ package com.clockworkjava.kursspring.domain;
 
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Entity
 public class Knight {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private int id;
 
   @NotNull
   @Size(min = 2, max = 40, message = "Imie rycerza jest albo za długi albo za krótkie")
   private String name;
+
   @NotNull
   @Range(min = 18, max = 60, message = "Rycerz jest albo za młody albo za stary")
   private int age;
+
+  @OneToOne
   private Quest quest;
-  private int id;
   private int level;
 
   public Knight() {
 
-    
 
   }
 

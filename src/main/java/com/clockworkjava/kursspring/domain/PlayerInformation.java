@@ -1,13 +1,25 @@
 package com.clockworkjava.kursspring.domain;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-@Component
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+
 //@Scope(value="session",proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Entity
 public class PlayerInformation {
+
   private int gold = 0;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private int id;
+
+  public PlayerInformation() {
+  }
 
   public int getGold() {
     return gold;

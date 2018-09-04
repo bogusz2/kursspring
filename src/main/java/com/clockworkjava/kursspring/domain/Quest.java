@@ -1,20 +1,38 @@
 package com.clockworkjava.kursspring.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="zadania")
 public class Quest {
 
   protected LocalDateTime startDate;
+
   private String description;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
+
   private int reward = 100;
+
   protected int lenghtInSeconds = 10;
+
   private boolean started = false;
+
   private boolean completed;
+
+  public Quest() {
+  }
 
   public Quest(int id, String description) {
     this.id = id;
     this.description = description;
+  }
+
+  public Quest(String description) {
+    this.description=description;
   }
 
   public int getId() {
