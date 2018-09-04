@@ -1,39 +1,45 @@
 package com.clockworkjava.kursspring.domain.repository;
 
 import com.clockworkjava.kursspring.domain.Quest;
-import com.clockworkjava.kursspring.utils.Ids;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import java.util.*;
 
-@Component
+@Repository
 public class QuestRepository {
+
   Random rand = new Random();
 
-  Map<Integer, Quest> quests = new HashMap<>();
+  @PersistenceContext
+  private EntityManager em;
 
+  @Transactional
   public void createQuest(String description) {
-    int newId = Ids.generateNewId(quests.keySet());
-    Quest newQuest = new Quest(newId, description);
-    quests.put(newId, newQuest);
+    //int newId = Ids.generateNewId(quests.keySet());
+    Quest newQuest = new Quest(description);
+    //quests.put(newId, newQuest);
+    em.persist(newQuest);
+    System.out.println(newQuest);
   }
 
   public List<Quest> getAll() {
-    return new ArrayList<>(quests.values());
+  return em.createQuery("from Quest", Quest.class).getResultList();
   }
 
-  @PostConstruct
-  public void init() {
-  }
 
+
+  @Transactional
   public void deleteQuest(Quest quest) {
-    quests.remove(quest.getId());
+    em.remove(quest);
   }
 
   @Scheduled(fixedDelayString = "${questDelay}")
+  @Transactional
   public void createRandomQuest() {
     List<String> descriptions = new ArrayList<>();
 
@@ -46,20 +52,13 @@ public class QuestRepository {
     createQuest(description);
   }
 
-
-
-  @Override
-  public String toString() {
-    return "QuestRepository{" +
-        "quests=" + quests +
-        '}';
-  }
-
+  @Transactional
   public void update(Quest quest) {
-    quests.put(quest.getId(),quest);
+    em.merge(quest);
   }
 
+  @Transactional
   public Quest getQuest(Integer id) {
-    return quests.get(id);
+    return em.find(Quest.class,id);
   }
 }

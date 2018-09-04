@@ -1,48 +1,62 @@
 package com.clockworkjava.kursspring.domain.repository;
 
 import com.clockworkjava.kursspring.domain.Knight;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.Optional;
 
 public class DBKnightRepository implements KnightRepository {
+
+  @PersistenceContext
+  private EntityManager em;
+
   @Override
+  @Transactional
   public void createKnight(String name, int age) {
-    System.out.println("Używam bazy danych");
+    Knight knight = new Knight(name, age);
+    em.persist(knight);
   }
 
   @Override
   public Collection<Knight> getAllKnights() {
-    System.out.println("Używam bazy danych");
-    throw new NotImplementedException();
+   return em.createQuery("from Knight", Knight.class).getResultList();
   }
 
   @Override
   public Optional<Knight> getKnight(String name) {
-    System.out.println("Używam bazy danych");
-    throw new NotImplementedException();
+    return Optional.ofNullable(em.createQuery("from Knight k where k.name=:name", Knight.class).setParameter("name",name).getSingleResult());
   }
 
   @Override
+  @Transactional
   public void deleteKnight(Integer id) {
-    System.out.println("Używam bazy danych");
+   em.remove(id);
   }
 
   @Override
   public void build() {
-    System.out.println("Używam bazy danych");
+
   }
 
   @Override
+  @Transactional
   public void createKnight(Knight knight) {
-    System.out.println("Używam bazy danych");
+   em.persist(knight);
   }
 
   @Override
   public Knight getKnightById(Integer id) {
-    System.out.println("Używam bazy danych");
-    throw new NotImplementedException();
+   return em.find(Knight.class,id);
+  }
+
+  @Override
+  @Transactional
+  public void updateKnight(int id, Knight knight){
+    em.merge(knight);
   }
 
   @Override
